@@ -12,8 +12,8 @@ from rest_framework import status
 # Create your views here.
 
 class CommentList(APIView):
-    def get(self, request):
-        comment = Comment.objects.filter(videoid=)
+    def get(self, request, videoid):
+        comment = Comment.objects.filter(videoid=videoid)
         serializer = CommentSerializer(comment, many=True)
         return Response(serializer.data)
 
@@ -26,8 +26,8 @@ class CommentList(APIView):
 
 
 class ReplyList(APIView):
-    def get(self, request):
-        reply = Reply.objects.all()
+    def get(self, request, comment_id):
+        reply = Reply.objects.filter(comment_id=comment_id)
         serializer = ReplySerializer(reply, many=True)
         return Response(serializer.data)
 
@@ -50,18 +50,4 @@ class CommentDetail(APIView):
     def get(self, request, pk):
         comment = self.get_object(pk)
         serializer = CommentSerializer(comment)
-        return Response(serializer.data)
-
-
-class ReplyDetail(APIView):
-
-    def get_object(self, fk):
-        try:
-            return Reply.objects.get(fk=fk)
-        except Reply.DoesNotExist:
-            raise Http404
-
-    def get(self, request, fk):
-        reply = self.get_object(fk)
-        serializer = ReplySerializer(reply)
         return Response(serializer.data)
